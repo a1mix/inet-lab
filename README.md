@@ -100,3 +100,22 @@ symfony server:start -d
   "token": "string"
 }
 ```
+
+## Регистрация
+- **Метод:** POST
+- **URL:** `/api/register`
+- **Тело запроса:**
+```json
+{
+  "email": "string",
+  "password": "string",
+  "username": "string"
+}
+```
+- **Ответ:**
+
+```json
+{
+  "userId": "int"
+}
+```
