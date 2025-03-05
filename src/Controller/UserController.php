@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\DTO\RegisterUserDTO;
 use App\Entity\User;
+use App\Service\RegisterService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -21,43 +23,20 @@ class UserController extends AbstractController
     }
 
     #[Route("/", name: "create", methods: ["POST"])]
-    public function create(Request $request): JsonResponse
+    public function create(RegisterService $registerService, Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
 
-        if (!isset($data['username']) || !isset($data['email']) || !isset($data['password'])) {
-            return $this->json(['message' => 'Необходимо указать username, email и password'], 400);
+        try {
+            $id = $registerService->registerUser(RegisterUserDTO::fromRequestData($data));
+
+            return $this->json([
+                'message' => "Пользователь успешно создан",
+                'userId' => $id,
+            ]);
+        } catch (\Exception $exception) {
+            return $this->json(['message' => $exception->getMessage()], $exception->getCode());
         }
-
-        if (strlen($data['username']) < 3 || strlen($data['username']) > 255) {
-            return $this->json(['message' => 'Имя пользователя должно быть от 3 до 255 символов'], 400);
-        }
-
-        if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
-            return $this->json(['message' => 'Некорректный формат email'], 400);
-        }
-
-        if (strlen($data['password']) < 6) {
-            return $this->json(['message' => 'Пароль должен быть не менее 6 символов'], 400);
-        }
-
-        $existingUser = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $data['email']]);
-        if ($existingUser) {
-            return $this->json(['message' => 'Пользователь с таким email уже существует'], 409);
-        }
-
-        $user = new User();
-        $user->setUsername($data['username']);
-        $user->setEmail($data['email']);
-        $user->setPassword($this->passwordHasher->hashPassword($user, $data['password']));
-
-        $this->entityManager->persist($user);
-        $this->entityManager->flush();
-
-        return $this->json([
-            'message' => 'Пользователь успешно создан',
-            'userId' => $user->getId(),
-        ], 201);
     }
 
     #[Route("/{id}", name: "update", methods: ["PUT"])]
