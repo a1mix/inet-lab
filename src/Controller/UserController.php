@@ -8,7 +8,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\Routing\Annotation\Route as RouteAlias;
 use Symfony\Component\Routing\Attribute\Route;
 
 
@@ -21,7 +20,7 @@ class UserController extends AbstractController
     {
     }
 
-    #[RouteAlias("/", name: "create", methods: ["POST"])]
+    #[Route("/", name: "create", methods: ["POST"])]
     public function create(Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
@@ -61,7 +60,7 @@ class UserController extends AbstractController
         ], 201);
     }
 
-    #[RouteAlias("/{id}", name: "update", methods: ["PUT"])]
+    #[Route("/{id}", name: "update", methods: ["PUT"])]
     public function update(Request $request, int $id): JsonResponse
     {
         $user = $this->entityManager->getRepository(User::class)->find($id);
@@ -90,7 +89,7 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[RouteAlias("/{id}", name: "delete", methods: ["DELETE"])]
+    #[Route("/{id}", name: "delete", methods: ["DELETE"])]
     public function delete(int $id): JsonResponse
     {
         $user = $this->entityManager->getRepository(User::class)->find($id);
@@ -105,7 +104,7 @@ class UserController extends AbstractController
         return $this->json(['message' => 'Пользователь успешно удален']);
     }
 
-    #[RouteAlias("/{id}", name: "get", methods: ["GET"])]
+    #[Route("/{id}", name: "get", methods: ["GET"])]
     public function get(int $id): JsonResponse
     {
         $user = $this->entityManager->getRepository(User::class)->find($id);
