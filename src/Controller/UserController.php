@@ -12,8 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
-
-#[Route("/api/users")]
+#[Route('/api/users')]
 class UserController extends AbstractController
 {
     public function __construct(
@@ -22,7 +21,7 @@ class UserController extends AbstractController
     {
     }
 
-    #[Route("/", name: "create", methods: ["POST"])]
+    #[Route('/', name: 'create', methods: ['POST'])]
     public function create(RegisterService $registerService, Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
@@ -31,7 +30,7 @@ class UserController extends AbstractController
             $id = $registerService->registerUser(RegisterUserDTO::fromRequestData($data));
 
             return $this->json([
-                'message' => "Пользователь успешно создан",
+                'message' => 'Пользователь успешно создан',
                 'userId' => $id,
             ]);
         } catch (\Exception $exception) {
@@ -39,7 +38,7 @@ class UserController extends AbstractController
         }
     }
 
-    #[Route("/{id}", name: "update", methods: ["PUT"])]
+    #[Route('/{id}', name: 'update', methods: ['PUT'])]
     public function update(Request $request, int $id): JsonResponse
     {
         $user = $this->entityManager->getRepository(User::class)->find($id);
@@ -68,7 +67,7 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route("/{id}", name: "delete", methods: ["DELETE"])]
+    #[Route('/{id}', name: 'delete', methods: ['DELETE'])]
     public function delete(int $id): JsonResponse
     {
         $user = $this->entityManager->getRepository(User::class)->find($id);
@@ -83,7 +82,7 @@ class UserController extends AbstractController
         return $this->json(['message' => 'Пользователь успешно удален']);
     }
 
-    #[Route("/{id}", name: "get", methods: ["GET"])]
+    #[Route('/{id}', name: 'get', methods: ['GET'])]
     public function get(int $id): JsonResponse
     {
         $user = $this->entityManager->getRepository(User::class)->find($id);

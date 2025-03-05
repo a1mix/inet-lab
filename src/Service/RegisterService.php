@@ -17,7 +17,8 @@ class RegisterService
     {
     }
 
-    public function registerUser(RegisterUserDTO $dto) {
+    public function registerUser(RegisterUserDTO $dto)
+    {
         if (!isset($dto->username) || !isset($dto->email) || !isset($dto->password)) {
             throw new ValidationException('Необходимо указать username, email и password');
         }
