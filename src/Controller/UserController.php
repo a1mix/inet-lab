@@ -85,7 +85,7 @@ class UserController extends AbstractController
         $this->entityManager->flush();
 
         return $this->json([
-            'message' => 'User updated successfully',
+            'message' => 'Данные пользователя успешно обновлены',
             'userId' => $user->getId(),
         ]);
     }
